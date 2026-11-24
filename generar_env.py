@@ -4,8 +4,8 @@ import secrets
 dest = Path(__file__).resolve().parent / '.env'
 content = '\n'.join([
     'DJANGO_SECRET_KEY=' + secrets.token_urlsafe(48),
-    'POSTGRES_DB=entregapro',
-    'POSTGRES_USER=entregapro',
+    'POSTGRES_DB=entregahub',
+    'POSTGRES_USER=entregahub',
     'POSTGRES_PASSWORD=' + secrets.token_urlsafe(24),
     'DEMO_PASSWORD=' + secrets.token_urlsafe(18),
     '',

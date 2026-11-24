@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: dev_entregahub_db
+    container_name: entregahub_db
     image: postgres:17.12-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:?Crear .env}
@@ -14,7 +14,7 @@ services:
       timeout: 3s
       retries: 30
   backend:
-    container_name: dev_entregahub_backend
+    container_name: entregahub_backend
     build: ./backend
     env_file: .env
     environment:
@@ -27,7 +27,7 @@ services:
       db:
         condition: service_healthy
   frontend:
-    container_name: dev_entregahub_frontend
+    container_name: entregahub_frontend
     build: ./frontend
     working_dir: /app
     volumes:

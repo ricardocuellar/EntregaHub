@@ -12,4 +12,4 @@ def csrf_failure(request, reason=''):
 @authentication_classes([])
 @permission_classes([AllowAny])
 def health(request):
-    return Response({'status': 'ok', 'service': 'EntregaPRO API'})
+    return Response({'status': 'ok', 'service': 'EntregaHub API'})
