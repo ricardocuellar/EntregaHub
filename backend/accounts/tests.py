@@ -78,7 +78,7 @@ class SessionApiTests(TestCase):
         self.assertEqual(set(response.json()), {'csrfToken', 'user'})
         self.assertEqual(response.json()['user'], {
             'id': self.user.pk, 'username': self.user.username,
-            'name': 'Ana Demo', 'role': User.Role.COLLABORATOR,
+            'name': 'Ana', 'role': User.Role.COLLABORATOR,
         })
         self.assertEqual(response.json()['user'],
                          self.client.get('/api/auth/me/').json()['user'])
@@ -97,9 +97,26 @@ class SessionApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'user': {
             'id': self.user.pk, 'username': self.user.username,
-            'name': 'Ana Demo', 'role': User.Role.COLLABORATOR,
+            'name': 'Ana', 'role': User.Role.COLLABORATOR,
         }})
         self.assert_not_cached(response)
+
+    def test_public_name_and_username_fallback_without_password(self):
+        for first_name, expected_name in (('Ana', 'Ana'), ('', self.user.username)):
+            with self.subTest(first_name=first_name):
+                self.client = Client(enforce_csrf_checks=True)
+                User.objects.filter(pk=self.user.pk).update(first_name=first_name)
+                login_response = self.login(self.csrf())
+                me_response = self.client.get('/api/auth/me/')
+                for response in (login_response, me_response):
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(response.json()['user'], {
+                        'id': self.user.pk, 'username': self.user.username,
+                        'name': expected_name, 'role': User.Role.COLLABORATOR,
+                    })
+                    self.assertNotIn('password', response.json()['user'])
+                    self.assertNotIn(self.password, response.content.decode())
+                    self.assertNotIn(self.user.password, response.content.decode())
 
     def test_invalid_credentials_are_generic_and_do_not_create_session(self):
         token = self.csrf()

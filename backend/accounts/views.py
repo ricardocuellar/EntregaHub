@@ -8,6 +8,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.serializers import user_data
+
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
@@ -38,25 +40,14 @@ class LoginView(APIView):
         login(request, user)
         return Response({
             'csrfToken': get_token(request),
-            'user': {
-                'id': user.pk,
-                'username': user.username,
-                'name': user.get_full_name(),
-                'role': user.role,
-            },
+            'user': user_data(user),
         })
 
 
 @method_decorator(never_cache, name='dispatch')
 class MeView(APIView):
     def get(self, request):
-        user = request.user
-        return Response({'user': {
-            'id': user.pk,
-            'username': user.username,
-            'name': user.get_full_name(),
-            'role': user.role,
-        }})
+        return Response({'user': user_data(request.user)})
 
 
 @method_decorator(never_cache, name='dispatch')

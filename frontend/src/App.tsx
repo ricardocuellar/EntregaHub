@@ -94,7 +94,7 @@ function Home() {
 
   return <Layout actions={<button onClick={logout} disabled={busy}>
     {busy ? 'Saliendo…' : 'Cerrar sesión'}
-  </button>}><h1>Tu sesión</h1><section className="card">
+  </button>}><h1>Hola, {session.user.name}</h1><section className="card">
     <span className="tag">Sesión activa</span>
     <p>Has iniciado sesión correctamente.</p>
     <p><strong>Usuario:</strong> {session.user.username}</p>
